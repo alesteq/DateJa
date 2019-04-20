@@ -176,18 +176,6 @@ class DateJa
 		 */
 		$holidays = 0;
 
-//		// 前月末日の00:00のtimestampを取得
-//		$year  = (int)date("Y", $time_stamp);
-//		$month = (int)date("m", $time_stamp);
-//		$baseSec = mktime(0, 0, 0, $month, 0, $year);
-//
-//		// 前月末日の祝日判定
-//		$day = $this->getDay($baseSec);
-//		$holiday_hash = $this->getHolidayList($baseSec, false);
-//		if (isset($holiday_hash[$day]) && $holiday_hash[$day] != DJ_NO_HOLIDAY && $holiday_hash[$day] != DJ_COMPENSATING_HOLIDAY) {
-//			$holidays = 1;
-//		}
-
 		// 当該月1日の00:00のtimestamp
 		$year  = (int)date("Y", $time_stamp);
 		$month = (int)date("m", $time_stamp);
@@ -451,15 +439,18 @@ class DateJa
 	 */
 	public function makeDateArray(int $time_stamp): array
 	{
+		$holiday = $this->getHolidayList($time_stamp);
+		$day = $this->getDay($time_stamp);
+		$week = $this->getWeekday($time_stamp);
 		$res = array(
 			"Year"    => $this->getYear($time_stamp),
 			"Month"   => $this->getMonth($time_stamp),
-			"Day"     => $this->getDay($time_stamp),
-			"Weekday" => $this->getWeekday($time_stamp),
+			"Day"     => $day,
+			"Weekday" => $week,
+			"Weekname"=> $this->viewWeekday($week),
+			"Holiday" => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
 		);
 
-		$holiday_list = $this->getHolidayList($time_stamp);
-		$res["Holiday"] = isset($holiday_list[$res["Day"]]) ? $holiday_list[$res["Day"]] : DJ_NO_HOLIDAY;
 		return $res;
 	}
 
@@ -473,16 +464,15 @@ class DateJa
 	private function parseTime(int $time_stamp): array
 	{
 		$holiday = $this->getHolidayList($time_stamp);
-
-		$day = date("j", $time_stamp);
+		$day = $this->getDay($time_stamp);
 		$res = array(
 			"time_stamp" => $time_stamp,
-			"day"        => $day,
-			"strday"     => date("d", $time_stamp),
-			"holiday"    => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
-			"week"       => $this->getWeekday($time_stamp),
+			"year"       => $this->getYear($time_stamp),
 			"month"      => date("m", $time_stamp),
-			"year"       => date("Y", $time_stamp),
+			"strday"     => date("d", $time_stamp),
+			"day"        => $day,
+			"week"       => $this->getWeekday($time_stamp),
+			"holiday"    => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
 		);
 		return $res;
 	}
