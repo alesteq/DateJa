@@ -22,7 +22,6 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	{
 		$this->assertArrayHasKey(3, $this->dj->getHolidayList($this->timestamp, false));
 		$this->assertContainsOnly('int', $this->dj->getHolidayList($this->timestamp, false));
-		$this->assertInternalType('array', $this->dj->getHolidayList(1, false));
 		
 		// 国民の休日
 		$this->assertContains(11, $this->dj->getHolidayList($this->timestamp));
