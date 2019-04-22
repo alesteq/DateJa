@@ -2,16 +2,56 @@
 namespace Tests\Alesteq\DateJa;
 require_once __DIR__ . '/../../../vendor/autoload.php';
 use Alesteq\DateJa\DateJa;
+use Alesteq\DateJa\DateUtil;
+use Alesteq\DateJa\Holiday\JanuaryHoliday;
+use Alesteq\DateJa\Holiday\FebruaryHoliday;
+use Alesteq\DateJa\Holiday\MarchHoliday;
+use Alesteq\DateJa\Holiday\AprilHoliday;
+use Alesteq\DateJa\Holiday\MayHoliday;
+use Alesteq\DateJa\Holiday\JuneHoliday;
+use Alesteq\DateJa\Holiday\JulyHoliday;
+use Alesteq\DateJa\Holiday\AugustHoliday;
+use Alesteq\DateJa\Holiday\SeptemberHoliday;
+use Alesteq\DateJa\Holiday\OctoberHoliday;
+use Alesteq\DateJa\Holiday\NovemberHoliday;
+use Alesteq\DateJa\Holiday\DecemberHoliday;
+
 
 class DateJaTest extends \PHPUnit\Framework\TestCase
 {
 	private $dj = null;
+	private $util = null;
+	private $january = null;
+	private $february = null;
+	private $march = null;
+	private $april = null;
+	private $may = null;
+	private $june = null;
+	private $july = null;
+	private $august = null;
+	private $september = null;
+	private $october = null;
+	private $november = null;
+	private $december = null;
 	private $timestamp = 0;
 	
 	public function setUp(): void
 	{
 		$this->dj = new DateJa();
-		$this->timestamp = mktime(0, 0, 0, 05, 10, 2019);
+		$this->util = new DateUtil();
+		$this->january = new JanuaryHoliday();
+		$this->february = new FebruaryHoliday();
+		$this->march = new MarchHoliday();
+		$this->april = new AprilHoliday();
+		$this->may = new MayHoliday();
+		$this->june = new JuneHoliday();
+		$this->july = new JulyHoliday();
+		$this->august = new AugustHoliday();
+		$this->september = new SeptemberHoliday();
+		$this->october = new OctoberHoliday();
+		$this->november = new NovemberHoliday();
+		$this->december = new DecemberHoliday();
+		$this->timestamp = mktime(0, 0, 0, 5, 10, 2019);
 	}
 	
 	/**
@@ -24,7 +64,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		$this->assertContainsOnly('int', $this->dj->getHolidayList($this->timestamp, false));
 		
 		// 国民の休日
-		$this->assertContains(11, $this->dj->getHolidayList($this->timestamp));
+		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 4, 1, 2019)));
 	}
 	
 	/**
@@ -32,15 +72,11 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 * @test
 	 * @private
 	 */
-	public function testGetJanuaryHoliday()
+	public function testGetHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getJanuaryHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(2, $method->invoke($this->dj, 2006, true));
-		$this->assertArrayHasKey(16, $method->invoke($this->dj, 1995, true));
+		$this->assertContainsOnly('int', $this->january->getHoliday(2019));
+		$this->assertArrayHasKey(2, $this->january->getHoliday(2006));
+		$this->assertArrayHasKey(16, $this->january->getHoliday(1995));
 	}
 	
 	/**
@@ -50,14 +86,10 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetFebruaryHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getFebruaryHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(24, $method->invoke($this->dj, 1989, true));
-		$this->assertArrayHasKey(23, $method->invoke($this->dj, 2020, true));
-		$this->assertArrayHasKey(11, $method->invoke($this->dj, 2001, true));
+		$this->assertContainsOnly('int', $this->february->getHoliday(2019));
+		$this->assertArrayHasKey(24, $this->february->getHoliday(1989));
+		$this->assertArrayHasKey(23, $this->february->getHoliday(2020));
+		$this->assertArrayHasKey(11, $this->february->getHoliday(2001));
 	}
 	
 	/**
@@ -67,12 +99,8 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetMarchHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getMarchHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertContains(13, $method->invoke($this->dj, 1999, true));
+		$this->assertContainsOnly('int', $this->march->getHoliday(2019));
+		$this->assertContains(13, $this->march->getHoliday(1999));
 	}
 	
 	/**
@@ -82,15 +110,11 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetAprilHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getAprilHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(29, $method->invoke($this->dj, 1989, true));
-		$this->assertArrayHasKey(29, $method->invoke($this->dj, 1988, true));
-		$this->assertArrayHasKey(10, $method->invoke($this->dj, 1959, true));
-		$this->assertArrayHasKey(30, $method->invoke($this->dj, 2001, true));
+		$this->assertContainsOnly('int', $this->april->getHoliday(2019));
+		$this->assertArrayHasKey(29, $this->april->getHoliday(1989));
+		$this->assertArrayHasKey(29, $this->april->getHoliday(1988));
+		$this->assertArrayHasKey(10, $this->april->getHoliday(1959));
+		$this->assertArrayHasKey(30, $this->april->getHoliday(2001));
 	}
 
 	/**
@@ -100,13 +124,10 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetMayHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getMayHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(6, $method->invoke($this->dj, 2009, true));
-		$this->assertArrayHasKey(4, $method->invoke($this->dj, 1998, true));
+		$this->assertContainsOnly('int', $this->may->getHoliday(2019));
+		$this->assertArrayHasKey(6, $this->may->getHoliday(2009));
+		$this->assertArrayHasKey(4, $this->may->getHoliday(1998));
+		$this->assertContains(11, $this->may->getHoliday(1999));
 	}
 
 	/**
@@ -116,12 +137,8 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetJuneHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getJuneHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(9, $method->invoke($this->dj, 1993, true));
+		$this->assertContainsOnly('int', $this->june->getHoliday(2019));
+		$this->assertArrayHasKey(9, $this->june->getHoliday(1993));
 	}
 
 	/**
@@ -131,13 +148,9 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetJulyHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getJulyHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertContains(15, $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(21, $method->invoke($this->dj, 1997, true));
+		$this->assertContainsOnly('int', $this->july->getHoliday(2019));
+		$this->assertContains(15, $this->july->getHoliday(2019));
+		$this->assertArrayHasKey(21, $this->july->getHoliday(1997));
 	}
 
 	/**
@@ -147,11 +160,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetAugustHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getAugustHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
+		$this->assertContainsOnly('int', $this->august->getHoliday(2019));
 	}
 
 	/**
@@ -161,13 +170,9 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetSeptemberHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getSeptemberHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(16, $method->invoke($this->dj, 1996, true));
-		$this->assertContains(13, $method->invoke($this->dj, 2001, true));
+		$this->assertContainsOnly('int', $this->september->getHoliday(2019));
+		$this->assertArrayHasKey(16, $this->september->getHoliday(1996));
+		$this->assertContains(13, $this->september->getHoliday(2001));
 	}
 
 	/**
@@ -177,12 +182,8 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetOctoberHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getOctoberHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(11, $method->invoke($this->dj, 1999, true));
+		$this->assertContainsOnly('int', $this->october->getHoliday(2019));
+		$this->assertArrayHasKey(11, $this->october->getHoliday(1999));
 	}
 
 	/**
@@ -192,13 +193,9 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetNovemberHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getNovemberHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
-		$this->assertArrayHasKey(12, $method->invoke($this->dj, 1990, true));
-		$this->assertArrayHasKey(24, $method->invoke($this->dj, 1997, true));
+		$this->assertContainsOnly('int', $this->november->getHoliday(2019));
+		$this->assertArrayHasKey(12, $this->november->getHoliday(1990));
+		$this->assertArrayHasKey(24, $this->november->getHoliday(1997));
 	}
 
 	/**
@@ -208,11 +205,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetDecemberHoliday()
 	{
-		$reflection = new \ReflectionClass($this->dj);
-		$method = $reflection->getMethod('getDecemberHoliday');
-		$method->setAccessible(true);
-
-		$this->assertContainsOnly('int', $method->invoke($this->dj, 2019, true));
+		$this->assertContainsOnly('int', $this->december->getHoliday(2018));
 	}
 	
 	/**
@@ -330,12 +323,12 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetVrenalEquinoxDay()
 	{
-		$this->assertEquals(0, $this->dj->getVrenalEquinoxDay(1850));
-		$this->assertEquals(21, $this->dj->getDay($this->dj->getVrenalEquinoxDay(1899)));
-		$this->assertEquals(21, $this->dj->getDay($this->dj->getVrenalEquinoxDay(1979)));
-		$this->assertEquals(20, $this->dj->getDay($this->dj->getVrenalEquinoxDay(2099)));
-		$this->assertEquals(20, $this->dj->getDay($this->dj->getVrenalEquinoxDay(2149)));
-		$this->assertEquals(0, $this->dj->getVrenalEquinoxDay(2151));
+		$this->assertEquals(0, $this->march->getVrenalEquinoxDay(1850));
+		$this->assertEquals(21, $this->dj->getDay($this->march->getVrenalEquinoxDay(1899)));
+		$this->assertEquals(21, $this->dj->getDay($this->march->getVrenalEquinoxDay(1979)));
+		$this->assertEquals(20, $this->dj->getDay($this->march->getVrenalEquinoxDay(2099)));
+		$this->assertEquals(20, $this->dj->getDay($this->march->getVrenalEquinoxDay(2149)));
+		$this->assertEquals(0, $this->march->getVrenalEquinoxDay(2151));
 	}
 
 	/**
@@ -346,12 +339,12 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetAutumnEquinoxDay()
 	{
-		$this->assertEquals(0, $this->dj->getAutumnEquinoxDay(1850));
-		$this->assertEquals(23, $this->dj->getDay($this->dj->getAutumnEquinoxDay(1899)));
-		$this->assertEquals(24, $this->dj->getDay($this->dj->getAutumnEquinoxDay(1979)));
-		$this->assertEquals(23, $this->dj->getDay($this->dj->getAutumnEquinoxDay(2099)));
-		$this->assertEquals(23, $this->dj->getDay($this->dj->getAutumnEquinoxDay(2149)));
-		$this->assertEquals(0, $this->dj->getAutumnEquinoxDay(2151));
+		$this->assertEquals(0, $this->september->getAutumnEquinoxDay(1850));
+		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(1899)));
+		$this->assertEquals(24, $this->dj->getDay($this->september->getAutumnEquinoxDay(1979)));
+		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(2099)));
+		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(2149)));
+		$this->assertEquals(0, $this->september->getAutumnEquinoxDay(2151));
 	}
 	
 	/**
