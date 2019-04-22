@@ -8,7 +8,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	private $dj = null;
 	private $timestamp = 0;
 	
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->dj = new DateJa();
 		$this->timestamp = mktime(0, 0, 0, 05, 10, 2019);
