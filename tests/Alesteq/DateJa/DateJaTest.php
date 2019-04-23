@@ -172,6 +172,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	{
 		$this->assertContainsOnly('int', $this->september->getHoliday(2019));
 		$this->assertArrayHasKey(16, $this->september->getHoliday(1996));
+		$this->assertArrayHasKey(24, $this->september->getHoliday(2001));
 		$this->assertContains(13, $this->september->getHoliday(2001));
 	}
 

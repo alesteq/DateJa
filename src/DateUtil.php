@@ -273,6 +273,55 @@ class DateUtil
 	}
 
 	/**
+	 * ハッピーマンデーの判定
+	 *
+	 * @param {int} year
+	 * @param {int} month
+	 * @return {array} ハッピーマンデーがある場合にその日付と祝日名のハッシュを返す、ない場合は[]を返す
+	 */
+	public function getHappyMonday(int $year, int $month): array
+	{
+		$res = [];
+		$holiday_name_2000 = [
+			1 => DJ_COMING_OF_AGE_DAY,
+			10 => DJ_SPORTS_DAY,
+		];
+		$holiday_name_2003 = [
+			7 => DJ_MARINE_DAY,
+			9 => DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY,
+		];
+		
+		if ($year >= 2000 && array_key_exists($month, $holiday_name_2000)) {
+			$second_monday = $this->getDayByWeekly($year, $month, DJ_MONDAY, 2);
+			$res[$second_monday] = $holiday_name_2000[$month];
+		}
+		
+		if ($year >= 2003 && array_key_exists($month, $holiday_name_2003)) {
+			$third_monday = $this->getDayByWeekly($year, $month, DJ_MONDAY, 3);
+			$res[$third_monday] = $holiday_name_2003[$month];
+		}
+		
+		return $res;
+	}
+
+	/**
+	 * 振替休日の判定
+	 *
+	 * @param {int} $time_stamp  判定を行う日のタイムスタンプ
+	 * @param {array} $holidays  振替休日の場合に追加する祝日の配列
+	 * @raturn {array} 振替休日になる場合に{@code $holidays}に追加して返す
+	 */
+	public function getCompensatory(int $time_stamp, array $holidays): array
+	{
+		if ($this->getWeekDay($time_stamp) == DJ_SUNDAY) {
+			$day = $this->getDay($time_stamp) + 1;
+			$holidays[$day] = DJ_COMPENSATING_HOLIDAY;
+		}
+		
+		return $holidays;
+	}
+
+	/**
 	 * 指定月の第n X曜日（e.g. 第３月曜日）の日付を取得
 	 *
 	 * @param {int} year 年

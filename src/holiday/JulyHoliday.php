@@ -22,16 +22,12 @@ class JulyHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
-		$res = array();
-		if ($year >= 2003) {
-			$third_monday = $this->getDayByWeekly($year, 7, DJ_MONDAY, 3);
-			$res[$third_monday] = DJ_MARINE_DAY;
-		} else if ($year >= 1996) {
+		$res = $this->getHappyMonday($year, 7);
+		
+		if ($year >= 1996 && $year < 2003) {
 			$res[20] = DJ_MARINE_DAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 7, 20, $year)) == DJ_SUNDAY) {
-				$res[21] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 7, 20, $year), $res);
 		}
 
 		return $res;

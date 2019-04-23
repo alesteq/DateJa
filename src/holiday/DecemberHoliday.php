@@ -26,9 +26,8 @@ class DecemberHoliday extends DateUtil implements HolidayList
 		if ($year >= 1989 && $year < 2019) {
 			$res[23] = DJ_THE_EMPEROR_S_BIRTHDAY;
 		}
-		if ($this->getWeekDay(mktime(0, 0, 0, 12, 23, $year)) == DJ_SUNDAY) {
-			$res[24] = DJ_COMPENSATING_HOLIDAY;
-		}
+		//振替休日
+		$res = $this->getCompensatory(mktime(0, 0, 0, 12, 23, $year), $res);
 
 		return $res;
 	}

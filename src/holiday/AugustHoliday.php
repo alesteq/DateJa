@@ -25,10 +25,8 @@ class AugustHoliday extends DateUtil implements HolidayList
 		$res = array();
 		if ($year >= 2016) {
 			$res[11] = DJ_MOUNTAIN_DAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 8, 11, $year)) == DJ_SUNDAY) {
-				$res[12] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 8, 11, $year), $res);
 		}
 
 		return $res;

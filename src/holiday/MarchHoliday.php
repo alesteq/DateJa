@@ -23,13 +23,11 @@ class MarchHoliday extends DateUtil implements HolidayList
 	public function getHoliday(int $year): array
 	{
 		$VrenalEquinoxDay = $this->getVrenalEquinoxDay($year);
-		if ($VrenalEquinoxDay==0) return array();
+		if ($VrenalEquinoxDay == 0) return array();
 
 		$res[$this->getDay($VrenalEquinoxDay)] = DJ_VERNAL_EQUINOX_DAY;
-		//振替休日確認
-		if ($this->getWeekDay($VrenalEquinoxDay) == DJ_SUNDAY) {
-			$res[$this->getDay($VrenalEquinoxDay)+1] = DJ_COMPENSATING_HOLIDAY;
-		}
+		//振替休日
+		$res = $this->getCompensatory($VrenalEquinoxDay, $res);
 
 		return $res;
 	}
@@ -43,18 +41,20 @@ class MarchHoliday extends DateUtil implements HolidayList
 	 */
 	public function getVrenalEquinoxDay(int $year): int
 	{
-		if ($year < 1851 || $year > 2150) {
+		if ($year <= 1850 || $year > 2150) {
 			return 0;
 		}
-		
-		if ($year <= 1899) {
-			$adjust = 19.8277;
-		} else if ($year <= 1979) {
-			$adjust = 20.8357;
-		} else if ($year <= 2099) {
-			$adjust = 20.8431;
-		} else if ($year <= 2150) {
+		if ($year > 2099 && $year <= 2150) {
 			$adjust = 21.851;
+		}
+		if ($year > 1979 && $year <= 2099) {
+			$adjust = 20.8431;
+		}
+		if ($year > 1899 && $year <= 1979) {
+			$adjust = 20.8357;
+		}
+		if ($year > 1850 && $year <= 1899) {
+			$adjust = 19.8277;
 		}
 		$day = floor($adjust + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		

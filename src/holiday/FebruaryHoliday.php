@@ -23,19 +23,15 @@ class FebruaryHoliday extends DateUtil implements HolidayList
 	public function getHoliday(int $year): array
 	{
 		$res[11] = DJ_NATIONAL_FOUNDATION_DAY;
-		//振替休日確認
-		if ($this->getWeekDay(mktime(0, 0, 0, 2, 11, $year)) == DJ_SUNDAY) {
-			$res[12] = DJ_COMPENSATING_HOLIDAY;
-		}
+		//振替休日
+		$res = $this->getCompensatory(mktime(0, 0, 0, 2, 11, $year), $res);
 		if ($year == 1989) {
 			$res[24] = DJ_THE_SHOWA_EMPEROR_DIED;
 		}
 		if ($year >= 2020) {
 			$res[23] = DJ_THE_EMPEROR_S_BIRTHDAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 2, 23, $year)) == DJ_SUNDAY) {
-				$res[24] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 2, 23, $year), $res);
 		}
 
 		return $res;

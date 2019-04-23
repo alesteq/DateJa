@@ -22,22 +22,16 @@ class JanuaryHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
+		$res = $this->getHappyMonday($year, 1);
+		
 		$res[1] = DJ_NEW_YEAR_S_DAY;
-		//振替休日確認
-		if ($this->getWeekDay(mktime(0, 0, 0, 1, 1, $year)) == DJ_SUNDAY) {
-			$res[2] = DJ_COMPENSATING_HOLIDAY;
-		}
-		if ($year >= 2000) {
-			//2000年以降は第二月曜日に変更
-			$second_monday = $this->getDayByWeekly($year, 1, DJ_MONDAY, 2);
-			$res[$second_monday] = DJ_COMING_OF_AGE_DAY;
-
-		} else {
+		//振替休日
+		$res = $this->getCompensatory(mktime(0, 0, 0, 1, 1, $year), $res);
+		
+		if ($year < 2000) {
 			$res[15] = DJ_COMING_OF_AGE_DAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 1, 15, $year)) == DJ_SUNDAY) {
-				$res[16] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 1, 15, $year), $res);
 		}
 
 		return $res;

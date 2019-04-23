@@ -33,10 +33,8 @@ class AprilHoliday extends DateUtil implements HolidayList
 		} else {
 			$res[29] = DJ_THE_EMPEROR_S_BIRTHDAY;
 		}
-		//振替休日確認
-		if ($this->getWeekDay(mktime(0, 0, 0, 4, 29, $year)) == DJ_SUNDAY) {
-			$res[30] = DJ_COMPENSATING_HOLIDAY;
-		}
+		//振替休日
+		$res = $this->getCompensatory(mktime(0, 0, 0, 4, 29, $year), $res);
 
 		return $res;
 	}

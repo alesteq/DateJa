@@ -22,25 +22,20 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
+		$res = $this->getHappyMonday($year, 9);
+		
 		$autumnEquinoxDay = $this->getAutumnEquinoxDay($year);
-		if ($autumnEquinoxDay==0) return array();
-
-		$autumnDay = $this->getDay($autumnEquinoxDay);
-		$res[$autumnDay] = DJ_AUTUMNAL_EQUINOX_DAY;
-		//振替休日確認
-		if ($this->getWeekDay($autumnEquinoxDay) == DJ_SUNDAY) {
-			$res[$autumnDay+1] = DJ_COMPENSATING_HOLIDAY;
+		if ($autumnEquinoxDay !== 0) {
+			$autumnDay = $this->getDay($autumnEquinoxDay);
+			$res[$autumnDay] = DJ_AUTUMNAL_EQUINOX_DAY;
+			//振替休日
+			$res = $this->getCompensatory($autumnEquinoxDay, $res);
 		}
 
-		if ($year >= 2003) {
-			$third_monday = $this->getDayByWeekly($year, 9, DJ_MONDAY, 3);
-			$res[$third_monday] = DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY;
-		} else if ($year >= 1966) {
+		if ($year >= 1966 && $year < 2003) {
 			$res[15] = DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 9, 15, $year)) == DJ_SUNDAY) {
-				$res[16] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 9, 15, $year), $res);
 		}
 
 		return $res;
@@ -55,18 +50,20 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 	 */
 	public function getAutumnEquinoxDay(int $year): int
 	{
-		if ($year < 1851 || $year > 2150) {
+		if ($year <= 1850 || $year > 2150) {
 			return 0;
 		}
-		
-		if ($year <= 1899) {
-			$adjust = 22.2588;
-		} else if ($year <= 1979) {
-			$adjust = 23.2588;
-		} else if ($year <= 2099) {
-			$adjust = 23.2488;
-		} else if ($year <= 2150) {
+		if ($year > 2099 && $year <= 2150) {
 			$adjust = 24.2488;
+		}
+		if ($year > 1979 && $year <= 2099) {
+			$adjust = 23.2488;
+		}
+		if ($year > 1899 && $year <= 1979) {
+			$adjust = 23.2588;
+		}
+		if ($year > 1850 && $year <= 1899) {
+			$adjust = 22.2588;
 		}
 		$day = floor($adjust + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		

@@ -22,22 +22,17 @@ class OctoberHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
-		$res = array();
-		if ($year >= 2000) {
-			//2000年以降は第二月曜日に変更
-			$second_monday = $this->getDayByWeekly($year, 10, DJ_MONDAY, 2);
-			$res[$second_monday] = DJ_SPORTS_DAY;
-			
-			// 即位礼正殿の儀
-			if ($year == 2019) {
-				$res[22] = DJ_REGNAL_DAY;
-			}
-		} else if ($year >= 1966) {
+		$res = $this->getHappyMonday($year, 10);
+		
+		// 即位礼正殿の儀
+		if ($year == 2019) {
+			$res[22] = DJ_REGNAL_DAY;
+		}
+		
+		if ($year >= 1966 && $year < 2000) {
 			$res[10] = DJ_SPORTS_DAY;
-			//振替休日確認
-			if ($this->getWeekDay(mktime(0, 0, 0, 10, 10, $year)) == DJ_SUNDAY) {
-				$res[11] = DJ_COMPENSATING_HOLIDAY;
-			}
+			//振替休日
+			$res = $this->getCompensatory(mktime(0, 0, 0, 10, 10, $year), $res);
 		}
 
 		return $res;
