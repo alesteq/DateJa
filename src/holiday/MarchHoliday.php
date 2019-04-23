@@ -45,15 +45,19 @@ class MarchHoliday extends DateUtil implements HolidayList
 	{
 		if ($year < 1851 || $year > 2150) {
 			return 0;
-		} else if ($year <= 1899) {
-			$day = floor(19.8277 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 1979) {
-			$day = floor(20.8357 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 2099) {
-			$day = floor(20.8431 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 2150) {
-			$day = floor(21.851 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		}
+		
+		if ($year <= 1899) {
+			$adjust = 19.8277;
+		} else if ($year <= 1979) {
+			$adjust = 20.8357;
+		} else if ($year <= 2099) {
+			$adjust = 20.8431;
+		} else if ($year <= 2150) {
+			$adjust = 21.851;
+		}
+		$day = floor($adjust + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
+		
 		return mktime(0, 0, 0, DJ_VERNAL_EQUINOX_DAY_MONTH, (int)$day, $year);
 	}
 }

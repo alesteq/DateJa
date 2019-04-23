@@ -25,21 +25,16 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 		$autumnEquinoxDay = $this->getAutumnEquinoxDay($year);
 		if ($autumnEquinoxDay==0) return array();
 
-		$res[$this->getDay($autumnEquinoxDay)] = DJ_AUTUMNAL_EQUINOX_DAY;
+		$autumnDay = $this->getDay($autumnEquinoxDay);
+		$res[$autumnDay] = DJ_AUTUMNAL_EQUINOX_DAY;
 		//振替休日確認
-		if ($this->getWeekDay($autumnEquinoxDay) == 0) {
-			$res[$this->getDay($autumnEquinoxDay)+1] = DJ_COMPENSATING_HOLIDAY;
+		if ($this->getWeekDay($autumnEquinoxDay) == DJ_SUNDAY) {
+			$res[$autumnDay+1] = DJ_COMPENSATING_HOLIDAY;
 		}
 
 		if ($year >= 2003) {
 			$third_monday = $this->getDayByWeekly($year, 9, DJ_MONDAY, 3);
 			$res[$third_monday] = DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY;
-
-			//敬老の日と、秋分の日の間の日は休みになる
-			if (($this->getDay($autumnEquinoxDay) - 1) == ($third_monday + 1)) {
-				$res[($this->getDay($autumnEquinoxDay) - 1)] = DJ_NATIONAL_HOLIDAY;
-			}
-
 		} else if ($year >= 1966) {
 			$res[15] = DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY;
 			//振替休日確認
@@ -62,15 +57,19 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 	{
 		if ($year < 1851 || $year > 2150) {
 			return 0;
-		} else if ($year <= 1899) {
-			$day = floor(22.2588 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 1979) {
-			$day = floor(23.2588 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 2099) {
-			$day = floor(23.2488 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else if ($year <= 2150) {
-			$day = floor(24.2488 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		}
+		
+		if ($year <= 1899) {
+			$adjust = 22.2588;
+		} else if ($year <= 1979) {
+			$adjust = 23.2588;
+		} else if ($year <= 2099) {
+			$adjust = 23.2488;
+		} else if ($year <= 2150) {
+			$adjust = 24.2488;
+		}
+		$day = floor($adjust + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
+		
 		return mktime(0, 0, 0, DJ_AUTUMNAL_EQUINOX_DAY_MONTH, (int)$day, $year);
 	}
 }
