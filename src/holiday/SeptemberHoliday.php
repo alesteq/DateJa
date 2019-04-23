@@ -24,7 +24,7 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 	{
 		$res = $this->getHappyMonday($year, 9);
 		
-		$autumnEquinoxDay = $this->getAutumnEquinoxDay($year);
+		$autumnEquinoxDay = $this->getEquinoxDay(mktime(0, 0, 0, DJ_AUTUMNAL_EQUINOX_DAY_MONTH, 1, $year));
 		if ($autumnEquinoxDay !== 0) {
 			$autumnDay = $this->getDay($autumnEquinoxDay);
 			$res[$autumnDay] = DJ_AUTUMNAL_EQUINOX_DAY;
@@ -39,35 +39,6 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 		}
 
 		return $res;
-	}
-	
-	/**
-	 * 秋分の日を取得
-	 * 1851〜2150 の間の予測
-	 *
-	 * @param {int} year 西暦
-	 * @return {int} タイムスタンプ
-	 */
-	public function getAutumnEquinoxDay(int $year): int
-	{
-		if ($year <= 1850 || $year > 2150) {
-			return 0;
-		}
-		if ($year > 2099 && $year <= 2150) {
-			$adjust = 24.2488;
-		}
-		if ($year > 1979 && $year <= 2099) {
-			$adjust = 23.2488;
-		}
-		if ($year > 1899 && $year <= 1979) {
-			$adjust = 23.2588;
-		}
-		if ($year > 1850 && $year <= 1899) {
-			$adjust = 22.2588;
-		}
-		$day = floor($adjust + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		
-		return mktime(0, 0, 0, DJ_AUTUMNAL_EQUINOX_DAY_MONTH, (int)$day, $year);
 	}
 }
 ?>

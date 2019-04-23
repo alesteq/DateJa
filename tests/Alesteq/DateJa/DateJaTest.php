@@ -324,12 +324,12 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetVrenalEquinoxDay()
 	{
-		$this->assertEquals(0, $this->march->getVrenalEquinoxDay(1850));
-		$this->assertEquals(21, $this->dj->getDay($this->march->getVrenalEquinoxDay(1899)));
-		$this->assertEquals(21, $this->dj->getDay($this->march->getVrenalEquinoxDay(1979)));
-		$this->assertEquals(20, $this->dj->getDay($this->march->getVrenalEquinoxDay(2099)));
-		$this->assertEquals(20, $this->dj->getDay($this->march->getVrenalEquinoxDay(2149)));
-		$this->assertEquals(0, $this->march->getVrenalEquinoxDay(2151));
+		$this->assertEquals(0, $this->dj->getEquinoxDay(mktime(0,0,0,3,1,1850)));
+		$this->assertEquals(21, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,3,1,1899))));
+		$this->assertEquals(21, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,3,1,1979))));
+		$this->assertEquals(20, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,3,1,2099))));
+		$this->assertEquals(20, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,3,1,2149))));
+		$this->assertEquals(0, $this->dj->getEquinoxDay(mktime(0,0,0,3,1,2151)));
 	}
 
 	/**
@@ -340,12 +340,12 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetAutumnEquinoxDay()
 	{
-		$this->assertEquals(0, $this->september->getAutumnEquinoxDay(1850));
-		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(1899)));
-		$this->assertEquals(24, $this->dj->getDay($this->september->getAutumnEquinoxDay(1979)));
-		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(2099)));
-		$this->assertEquals(23, $this->dj->getDay($this->september->getAutumnEquinoxDay(2149)));
-		$this->assertEquals(0, $this->september->getAutumnEquinoxDay(2151));
+		$this->assertEquals(0, $this->dj->getEquinoxDay(mktime(0,0,0,9,1,1850)));
+		$this->assertEquals(23, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,9,1,1899))));
+		$this->assertEquals(24, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,9,1,1979))));
+		$this->assertEquals(23, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,9,1,2099))));
+		$this->assertEquals(23, $this->dj->getDay($this->dj->getEquinoxDay(mktime(0,0,0,9,1,2149))));
+		$this->assertEquals(0, $this->dj->getEquinoxDay(mktime(0,0,0,9,1,2151)));
 	}
 	
 	/**

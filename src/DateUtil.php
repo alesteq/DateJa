@@ -92,6 +92,24 @@ class DateUtil
 		"1989" => "平成",
 		"2019" => "令和",
 	];
+	private $_equinox = [
+		3 => [
+			2150 => 0,
+			2099 => 21.851,
+			1979 => 20.8431,
+			1899 => 20.8357,
+			1850 => 19.8277,
+			1 => 0,
+		],
+		9 => [
+			2150 => 0,
+			2099 => 24.2488,
+			1979 => 23.2488,
+			1899 => 23.2588,
+			1850 => 22.2588,
+			1 => 0,
+		]
+	];
 
 	public function __construct()
 	{}
@@ -319,6 +337,29 @@ class DateUtil
 		}
 		
 		return $holidays;
+	}
+
+	/**
+	 * 春分秋分の日を返す（1851〜2150 の間の予測）
+	 *
+	 * @param {int} time_stamp
+	 * @return {int} 春分若しくは秋分の日のタイムスタンプ、どちらでもない場合は0を返す
+	 */
+	public function getEquinoxDay(int $time_stamp): int
+	{
+		$year = $this->getYear($time_stamp);
+		$month = $this->getMonth($time_stamp);
+		if (!array_key_exists($month, $this->_equinox)) return 0;
+		foreach ($this->_equinox[$month] as $start => $val) {
+			if ($start < $year) {
+				if ($val === 0) return 0;
+				$adj = $val;
+				break;
+			}
+		}
+		$day = floor($adj + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
+
+		return mktime(0, 0, 0, $month, (int)$day, $year);
 	}
 
 	/**
