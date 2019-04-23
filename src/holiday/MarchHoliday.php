@@ -43,7 +43,7 @@ class MarchHoliday extends DateUtil implements HolidayList
 	 */
 	public function getVrenalEquinoxDay(int $year): int
 	{
-		if ($year < 1851) {
+		if ($year < 1851 || $year > 2150) {
 			return 0;
 		} else if ($year <= 1899) {
 			$day = floor(19.8277 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
@@ -53,8 +53,6 @@ class MarchHoliday extends DateUtil implements HolidayList
 			$day = floor(20.8431 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		} else if ($year <= 2150) {
 			$day = floor(21.851 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else {
-			return 0;
 		}
 		return mktime(0, 0, 0, DJ_VERNAL_EQUINOX_DAY_MONTH, (int)$day, $year);
 	}

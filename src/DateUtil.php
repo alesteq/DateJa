@@ -5,6 +5,8 @@
 declare(strict_types=1);
 namespace Alesteq\DateJa;
 
+date_default_timezone_set('Asia/Tokyo');
+
 /**
  * 祝日定数
  */
@@ -52,7 +54,7 @@ define("DJ_SATURDAY", 6);
 
 class DateUtil
 {
-	private $_holiday_name = array(
+	private $_holiday_name = [
 		0 => "",
 		1 => "元旦",
 		2 => "成人の日",
@@ -77,49 +79,71 @@ class DateUtil
 		21 => "即位礼正殿の儀",
 		22 => "山の日",
 		23 => "天皇即位の日",
-	);
-	private $_weekday_name = array("日", "月", "火", "水", "木", "金", "土");
-	private $_month_name = array("", "睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走");
-	private $_six_weekday = array("大安", "赤口", "先勝", "友引", "先負", "仏滅");
-	private $_oriental_zodiac = array("亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌");
-	private $_era_name = array("", "明治", "大正", "昭和", "平成", "令和");
-	private $_era_calc = array(0, 1867, 1911, 1925, 1988, 2018);
+	];
+	private $_weekday_name = ["日", "月", "火", "水", "木", "金", "土"];
+	private $_month_name = ["", "睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走"];
+	private $_six_weekday = ["大安", "赤口", "先勝", "友引", "先負", "仏滅"];
+	private $_oriental_zodiac = ["亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌"];
+	private $_era_name = [
+		"0" => "",
+		"1868" => "明治",
+		"1912" => "大正",
+		"1926" => "昭和",
+		"1989" => "平成",
+		"2019" => "令和",
+	];
 
 	public function __construct()
 	{}
 	
 	/**
-	 * 元号キーを返す
+	 * 元号元年の西暦を返す
 	 *
 	 * @param {int} time_stamp タイムスタンプ
 	 * @return {int}
 	 */
-	public function getEraName(int $time_stamp): int
+	public function getEraNewYear(int $time_stamp): int
 	{
-		if (mktime(0, 0, 0, 1, 25, 1868) > $time_stamp) {
-			return 0;	// 一世一元の制より前
-		} else if (mktime(0, 0, 0, 7, 30, 1912) > $time_stamp) {
-			return 1;	// 明治
-		} else if (mktime(0, 0, 0, 12, 25, 1926) > $time_stamp) {
-			return 2;	// 大正
-		} else if (mktime(0, 0, 0, 1, 8, 1989) > $time_stamp) {
-			return 3;	// 昭和
-		} else if (mktime(0, 0, 0, 5 ,1, 2019) > $time_stamp) {
-			return 4;	// 平成
-		} else {
-			return 5;	// 令和
+		// 令和
+		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) $r = 2019;
+		
+		// 平成
+		if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp && mktime(0, 0, 0, 5 ,1, 2019) > $time_stamp) {
+			$r = 1989;
 		}
+		
+		// 昭和
+		if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp && mktime(0, 0, 0, 1, 8, 1989) > $time_stamp) {
+			$r = 1926;
+		}
+		
+		// 大正
+		if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp && mktime(0, 0, 0, 12, 25, 1926) > $time_stamp) {
+			$r = 1912;
+		}
+		
+		// 明治
+		if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp && mktime(0, 0, 0, 7, 30, 1912) > $time_stamp) {
+			$r = 1868;
+		}
+		
+		// 一世一元の制より前
+		if (mktime(0, 0, 0, 1, 25, 1868) > $time_stamp) {
+			$r = 0;
+		}
+		
+		return $r;
 	}
 
 	/**
 	 * 元号を返す
 	 *
-	 * @param {int} key 元号キー
+	 * @param {int} time_stamp タイムスタンプ
 	 * @return {string}
 	 */
-	public function viewEraName(int $key): string
+	public function viewEraName(int $time_stamp): string
 	{
-		return $this->_era_name[$key];
+		return $this->_era_name[$this->getEraNewYear($time_stamp)];
 	}
 
 	/**
@@ -131,9 +155,10 @@ class DateUtil
 	 */
 	public function getEraYear(int $time_stamp): int
 	{
-		$key = $this->getEraName($time_stamp);
+		$year = $this->getEraNewYear($time_stamp);
+		$year = empty($year) ?: --$year;
 
-		return $this->getYear($time_stamp)-$this->_era_calc[$key];
+		return $this->getYear($time_stamp) - $year;
 	}
 
 	/**
@@ -258,30 +283,11 @@ class DateUtil
 	 */
 	public function getDayByWeekly(int $year, int $month, int $weekly, int $renb = 1): int
 	{
-		switch ($weekly) {
-			case 0:
-				$map = array(7,1,2,3,4,5,6,);
-				break;
-			case 1:
-				$map = array(6,7,1,2,3,4,5,);
-				break;
-			case 2:
-				$map = array(5,6,7,1,2,3,4,);
-				break;
-			case 3:
-				$map = array(4,5,6,7,1,2,3,);
-				break;
-			case 4:
-				$map = array(3,4,5,6,7,1,2,);
-				break;
-			case 5:
-				$map = array(2,3,4,5,6,7,1,);
-				break;
-			case 6:
-				$map = array(1,2,3,4,5,6,7,);
-				break;
+		$ary = array(1,2,3,4,5,6,7,1,2,3,4,5,6,);
+		$start = 6 - $weekly;
+		for ($i = 0, $idx = $start; $i < 7; $i++, $idx++) {
+			$map[] = $ary[$idx];
 		}
-
 		$renb = 7*$renb+1;
 		return $renb - $map[$this->getWeekday(mktime(0,0,0,$month,1,$year))];
 	}

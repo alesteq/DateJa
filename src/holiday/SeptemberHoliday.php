@@ -60,7 +60,7 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 	 */
 	public function getAutumnEquinoxDay(int $year): int
 	{
-		if ($year < 1851) {
+		if ($year < 1851 || $year > 2150) {
 			return 0;
 		} else if ($year <= 1899) {
 			$day = floor(22.2588 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
@@ -70,8 +70,6 @@ class SeptemberHoliday extends DateUtil implements HolidayList
 			$day = floor(23.2488 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 		} else if ($year <= 2150) {
 			$day = floor(24.2488 + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
-		} else {
-			return 0;
 		}
 		return mktime(0, 0, 0, DJ_AUTUMNAL_EQUINOX_DAY_MONTH, (int)$day, $year);
 	}

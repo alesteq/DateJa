@@ -27,17 +27,17 @@ class OctoberHoliday extends DateUtil implements HolidayList
 			//2000年以降は第二月曜日に変更
 			$second_monday = $this->getDayByWeekly($year, 10, DJ_MONDAY, 2);
 			$res[$second_monday] = DJ_SPORTS_DAY;
+			
+			// 即位礼正殿の儀
+			if ($year == 2019) {
+				$res[22] = DJ_REGNAL_DAY;
+			}
 		} else if ($year >= 1966) {
 			$res[10] = DJ_SPORTS_DAY;
 			//振替休日確認
 			if ($this->getWeekDay(mktime(0, 0, 0, 10, 10, $year)) == DJ_SUNDAY) {
 				$res[11] = DJ_COMPENSATING_HOLIDAY;
 			}
-		}
-
-		if ($year == 2019) {
-			// 即位礼正殿の儀
-			$res[22] = DJ_REGNAL_DAY;
 		}
 
 		return $res;

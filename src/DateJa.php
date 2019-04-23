@@ -32,7 +32,7 @@ require_once __DIR__ . '/holiday/DecemberHoliday.php';
  */
 class DateJa extends DateUtil
 {
-	private $_month_holiday = array(
+	private $_month_holiday = [
 		1 => "Alesteq\DateJa\Holiday\JanuaryHoliday",
 		2 => "Alesteq\DateJa\Holiday\FebruaryHoliday",
 		3 => "Alesteq\DateJa\Holiday\MarchHoliday",
@@ -45,7 +45,7 @@ class DateJa extends DateUtil
 		10 => "Alesteq\DateJa\Holiday\OctoberHoliday",
 		11 => "Alesteq\DateJa\Holiday\NovemberHoliday",
 		12 => "Alesteq\DateJa\Holiday\DecemberHoliday",
-	);
+	];
 	
 	/**
 	 * コンストラクタ
@@ -153,14 +153,14 @@ class DateJa extends DateUtil
 		$holiday = $this->getHolidayList($time_stamp);
 		$day = $this->getDay($time_stamp);
 		$week = $this->getWeekday($time_stamp);
-		$res = array(
+		$res = [
 			"Year"    => $this->getYear($time_stamp),
 			"Month"   => $this->getMonth($time_stamp),
 			"Day"     => $day,
 			"Weekday" => $week,
 			"Weekname"=> $this->viewWeekday($week),
 			"Holiday" => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
-		);
+		];
 
 		return $res;
 	}
@@ -176,7 +176,7 @@ class DateJa extends DateUtil
 	{
 		$holiday = $this->getHolidayList($time_stamp);
 		$day = $this->getDay($time_stamp);
-		$res = array(
+		$res = [
 			"time_stamp" => $time_stamp,
 			"year"       => $this->getYear($time_stamp),
 			"month"      => date("m", $time_stamp),
@@ -184,7 +184,7 @@ class DateJa extends DateUtil
 			"day"        => $day,
 			"week"       => $this->getWeekday($time_stamp),
 			"holiday"    => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
-		);
+		];
 		return $res;
 	}
 
@@ -226,7 +226,7 @@ class DateJa extends DateUtil
 	 */
 	public function getSpanCalendar(int $year, int $month, int $str, int $lim): array
 	{
-		$res = array();
+		$res = [];
 		if ($lim <= 0) {
 			return $res;
 		}
@@ -245,49 +245,53 @@ class DateJa extends DateUtil
 	 * 営業日を取得
 	 *
 	 * @param {int} time_stamp 取得開始日
-	 * @param {int} lim_day 取得日数（マイナスも可）
-	 * @param {bool} is_closed_holiday 祝日を休業日とする場合はtrue、休まない場合はfalse(optional)
-	 * @param {array} closed_week 休業する曜日定数の配列 (optional)
+	 * @param {int} days 取得日数（マイナスも可）
+	 * @param {array} closed_week 休業する曜日定数の配列、[7 => 祝日を休業とする場合は1] (optional)
 	 * @param {array} closed_date 休業する日付（Y-m-d）若しくはタイムスタンプの配列 (optional)
 	 * @return {array} 営業日の配列
 	 */
-	public function getWorkingDay(int $time_stamp, int $lim_day, bool $is_closed_holiday = true, array $closed_week = array(), array $closed_date = array() ): array
+	public function getWorkingDay(int $time_stamp, int $days, array $closed_week = [], array $closed_date = []): array
 	{
-		if (!empty($closed_week)) {
-			$closed_week = array_flip($closed_week);
-		}
-		if (!empty($closed_date)) {
-			$gc = array();
-			foreach ($closed_date as $value) {
-				if (preg_match("/^[1-9][0-9]*$/", $value)!==1) {
-					$value = strtotime($value);
-				}
-				$gc[mktime(0, 0, 0, (int)date("n", $value), (int)date("j", $value), (int)date("Y", $value))] = 1;
-			}
-			$closed_date = $gc;
-		}
-
-		$res = array();
-		$adjust = $lim_day>0? 1: -1;
-		$i = 0;
+		$closed_week = empty($closed_week) ?: array_flip($closed_week);
+		$closed_date = $this->getTimestampFor($closed_date);
+		$res = [];
+		$adjust = $days>0? 1: -1;
+		$one_day = 86400 * $adjust;
 		$job = 0;
-		$year  = (int)date("Y", $time_stamp);
-		$month = (int)date("n", $time_stamp);
-		$day   = (int)date("j", $time_stamp);
-		while ($job != $lim_day) {
-			$time_stamp = mktime(0, 0, 0, $month, $day + $i, $year);
+		$time_stamp = mktime(0, 0, 0, (int)date("n", $time_stamp), (int)date("j", $time_stamp), (int)date("Y", $time_stamp));
+		while ($job != $days) {
 			$gc = $this->parseTime($time_stamp);
 			if (
 				(array_key_exists($gc["week"], $closed_week) == false) && 
 				(array_key_exists($gc["time_stamp"], $closed_date) == false) && 
-				($is_closed_holiday ? $gc["holiday"] == DJ_NO_HOLIDAY : true)
+				(isset($closed_week[7]) ? $gc["holiday"] == DJ_NO_HOLIDAY : true)
 			) {
 				$res[] = $gc;
 				$job += $adjust;
 			}
-			$i += $adjust;
+			$time_stamp += $one_day;
 		}
 		return $res;
+	}
+	
+	/**
+	 * 受け取った日付の配列をそれぞれ当日00:00のタイムスタンプに変換
+	 *
+	 * @access private
+	 * @param {array} $args  日付文字列の配列
+	 * @return {array} タイムスタンプをキーにしたハッシュ
+	 */
+	public function getTimestampFor(array $args): array
+	{
+		$r = [];
+		foreach ($args as $value) {
+			if (preg_match("/^[1-9][0-9]*$/", $value)!==1) {
+				$value = strtotime($value) ?: 0;
+			}
+			$r[mktime(0, 0, 0, (int)date("n", $value), (int)date("j", $value), (int)date("Y", $value))] = 1;
+		}
+		
+		return $r;
 	}
 }
 ?>

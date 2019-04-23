@@ -237,17 +237,17 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	}
 
 	/**
-	 * 年号キーを返す
+	 * 年号元年の西暦を返す
 	 * @test
 	 */
 	public function testGetEraName()
 	{
-		$this->assertEquals(0, $this->dj->getEraName(mktime(0, 0, 0, 1 , 24, 1868)));
-		$this->assertEquals(1, $this->dj->getEraName(mktime(0, 0, 0, 1 , 25, 1868)));
-		$this->assertEquals(2, $this->dj->getEraName(mktime(0, 0, 0, 7 , 30, 1912)));
-		$this->assertEquals(3, $this->dj->getEraName(mktime(0, 0, 0, 1 , 7, 1989)));
-		$this->assertEquals(4, $this->dj->getEraName(mktime(0, 0, 0, 4, 30, 2019)));
-		$this->assertEquals(5, $this->dj->getEraName($this->timestamp));
+		$this->assertEquals(0, $this->dj->getEraNewYear(mktime(0, 0, 0, 1 , 24, 1868)));
+		$this->assertEquals(1868, $this->dj->getEraNewYear(mktime(0, 0, 0, 1 , 25, 1868)));
+		$this->assertEquals(1912, $this->dj->getEraNewYear(mktime(0, 0, 0, 7 , 30, 1912)));
+		$this->assertEquals(1926, $this->dj->getEraNewYear(mktime(0, 0, 0, 1 , 7, 1989)));
+		$this->assertEquals(1989, $this->dj->getEraNewYear(mktime(0, 0, 0, 4, 30, 2019)));
+		$this->assertEquals(2019, $this->dj->getEraNewYear($this->timestamp));
 	}
 
 	/**
@@ -312,7 +312,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testViewEraName()
 	{
-		$this->assertEquals('平成', $this->dj->viewEraName(4));
+		$this->assertEquals('平成', $this->dj->viewEraName(mktime(0, 0, 0, 4, 30, 2019)));
 	}
 	
 	/**
@@ -444,6 +444,6 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetWorkingDay()
 	{
-		$this->assertCount(5, $this->dj->getWorkingDay($this->timestamp, 5, true, [0,6], ['2019-05-15']));
+		$this->assertCount(5, $this->dj->getWorkingDay($this->timestamp, 5, [0,6,7], ['2019-05-15']));
 	}
 }
