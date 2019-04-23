@@ -1,5 +1,5 @@
 vendor/
+tests/
+build/
 composer.lock
 composer.phar
-tests/report/
-tests/phpunit.xml
