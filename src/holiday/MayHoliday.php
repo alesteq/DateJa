@@ -30,10 +30,6 @@ class MayHoliday extends DateUtil implements HolidayList
 				$res[6] = DJ_COMPENSATING_HOLIDAY;
 			}
 		} else if ($year >= 1986) {
-			// 5/4が月曜以外の平日の場合、国民の休日
-			if ($this->getWeekday(mktime(0, 0, 0, 5, 4, $year)) > DJ_MONDAY) {
-				$res[4] = DJ_NATIONAL_HOLIDAY;
-			}
 			// 振替休日
 			$res = $this->getCompensatory(mktime(0, 0, 0, 5, 3, $year), $res);
 		}

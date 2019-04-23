@@ -65,6 +65,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		
 		// 国民の休日
 		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 4, 1, 2019)));
+		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 5, 1, 1999)));
 	}
 	
 	/**
@@ -127,7 +128,6 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		$this->assertContainsOnly('int', $this->may->getHoliday(2019));
 		$this->assertArrayHasKey(6, $this->may->getHoliday(2009));
 		$this->assertArrayHasKey(4, $this->may->getHoliday(1998));
-		$this->assertContains(11, $this->may->getHoliday(1999));
 	}
 
 	/**

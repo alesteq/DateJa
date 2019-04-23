@@ -350,13 +350,16 @@ class DateUtil
 		$year = $this->getYear($time_stamp);
 		$month = $this->getMonth($time_stamp);
 		if (!array_key_exists($month, $this->_equinox)) return 0;
+		
 		foreach ($this->_equinox[$month] as $start => $val) {
 			if ($start < $year) {
-				if ($val === 0) return 0;
 				$adj = $val;
 				break;
 			}
 		}
+		
+		if ($adj === 0) return 0;
+		
 		$day = floor($adj + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 
 		return mktime(0, 0, 0, $month, (int)$day, $year);
