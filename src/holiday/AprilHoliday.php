@@ -29,10 +29,10 @@ class AprilHoliday extends DateUtil implements HolidayList
 			$res[29] = DJ_GREENERY_DAY;
 		} else {
 			$res[29] = DJ_THE_EMPEROR_S_BIRTHDAY;
-			if ($year == 1959) {
-				$res[10] = DJ_CROWN_PRINCE_HIROHITO_WEDDING;
-			}
 		}
+		
+		if ($year == 1959) $res[10] = DJ_CROWN_PRINCE_HIROHITO_WEDDING;
+		
 		//振替休日
 		$res = $this->getCompensatory(mktime(0, 0, 0, 4, 29, $year), $res);
 

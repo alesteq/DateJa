@@ -38,10 +38,8 @@ class MayHoliday extends DateUtil implements HolidayList
 		// 振替休日
 		$res = $this->getCompensatory(mktime(0, 0, 0, 5, 5, $year), $res);
 		
-		if ($year == 2019) {
-			// 天皇即位
-			$res[1] = DJ_EMPEROR_ENTHRONEMENT_DAY;
-		}
+		// 天皇即位
+		if ($year == 2019) $res[1] = DJ_EMPEROR_ENTHRONEMENT_DAY;
 
 		return $res;
 	}

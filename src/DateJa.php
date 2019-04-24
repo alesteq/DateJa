@@ -57,7 +57,7 @@ class DateJa extends DateUtil
 	 * 指定月の祝日リストを取得
 	 *
 	 * @param {int} time_stamp タイムスタンプ
-	 * @param {bool} isRecursion 国民の休日を判定する再帰呼び出しの有無
+	 * @param {bool} isRecursion 国民の休日を判定する再帰呼び出しの有無 (optional)
 	 * @return {array}
 	 */
 	public function getHolidayList(int $time_stamp, bool $isRecursion = true): array
@@ -78,12 +78,16 @@ class DateJa extends DateUtil
 	 * 国民の休日を取得
 	 * 1985-12-27前日と翌日が祝日の場合に休日とする（1985-12-27施行）
 	 *
+	 * @access private
 	 * @param {int} $time_stamp  当該月のタイムスタンプ
-	 * @param {array} $holiday_list  当該月の休日
+	 * @param {array} $holiday_list  当該月の祝日・休日
 	 * @return {array}
 	 */
-	public function getNationalHoliday(int $time_stamp, array $holiday_list = []): array
+	private function getNationalHoliday(int $time_stamp, array $holiday_list): array
 	{
+		// 国民の休日の祝日法改正前
+		if ($time_stamp < mktime(0, 0, 0, 12, 27, 1985)) return $holiday_list;
+
 		$one_day = 86400;
 		$yesterday = 0;
 
@@ -93,30 +97,25 @@ class DateJa extends DateUtil
 		 * １の位：昨日
 		 * 十の位：一昨日
 		 */
-		$holidays = 0;
+		$holiday_flag = 0;
 
 		// 当該月1日の00:00のtimestamp
 		$year  = (int)date("Y", $time_stamp);
 		$month = (int)date("m", $time_stamp);
 		$baseSec = mktime(0, 0, 0, $month, 1, $year);
-		if (empty($holiday_list)) {
-			$holiday_list = $this->getHolidayList($baseSec, false);
-		}
 		
-		// 国民の休日の祝日法改正前
-		if ($time_stamp < mktime(0, 0, 0, 12, 27, 1985)) return $holiday_list;
-
 		// 当該月末日の00:00のtimestamp
 		$targetSec = mktime(0, 0, 0, ++$month, 0, $year);
 
 		while ($baseSec <= $targetSec) {
 			$day = $this->getDay($baseSec);
-			$isHoliday = $this->isNationalHoliday($day, $holidays, $holiday_list);
+			$holiday = $holiday_list[$day] ?? DJ_NO_HOLIDAY;
+			$isHoliday = $this->isNationalHoliday($day, $holiday, $holiday_flag, $holiday_list);
 			
 			// フラグをシフト
-			$holidays = $holidays << 1;
-			$holidays += $isHoliday;
-			$holidays = $holidays & 3;
+			$holiday_flag = $holiday_flag << 1;
+			$holiday_flag += $isHoliday;
+			$holiday_flag = $holiday_flag & 3;
 
 			$yesterday = $day;
 			$baseSec += $one_day;
@@ -124,14 +123,8 @@ class DateJa extends DateUtil
 
 		// 翌月1日の祝日判定
 		$holiday_hash = $this->getHolidayList($baseSec, false);
-//		$this->isNationalHoliday(1, $yesterday, $holidays, $holiday_hash);
-		
-		if (isset($holiday_hash[1]) && $holiday_hash[1] != DJ_COMPENSATING_HOLIDAY) {
-			if ($holidays == 2) {
-				// 本日と一昨日が祝日で昨日が平日(２進数で0b10)
-				$holiday_list[$yesterday] = DJ_NATIONAL_HOLIDAY;
-			}
-		}
+		$holiday = $holiday_hash[1] ?? DJ_NO_HOLIDAY;
+		$isHoliday = $this->isNationalHoliday(1, $holiday, $holiday_flag, $holiday_list);
 		
 		return $holiday_list;
 	}
@@ -140,18 +133,20 @@ class DateJa extends DateUtil
 	 * 祝日（休日を除く）判定
 	 * getNationalHolidayで使用
 	 *
+	 * @access private
 	 * @param {int} day  判定する日
-	 * @param {int} holidays  ２進数の昨日と一昨日の祝日フラグ
-	 * @param {array} holiday_list
+	 * @param {int} holiday  祝日定数
+	 * @param {int} holiday_flag  ２進数の昨日と一昨日の祝日フラグ
+	 * @param {array} holiday_list  祝日の配列（リファレンス）
 	 * @return {array} 祝日の場合に{@code $holiday_list}に追加して返す
 	 */
-	private function isNationalHoliday(int $day, int $holidays, array &$holiday_list): int
+	private function isNationalHoliday(int $day, int $holiday, int $holiday_flag, array &$holiday_list): int
 	{
-		if (isset($holiday_list[$day]) && $holiday_list[$day] != DJ_COMPENSATING_HOLIDAY) {
+		if ($holiday !== DJ_NO_HOLIDAY && $holiday !== DJ_COMPENSATING_HOLIDAY) {
 			$isHoliday = 1;
 			
 			// 本日と一昨日が祝日で昨日が平日(２進数で0b10)
-			if ($holidays == 2) {
+			if ($holiday_flag == 2) {
 				$holiday_list[--$day] = DJ_NATIONAL_HOLIDAY;
 			}
 		} else {
@@ -300,7 +295,7 @@ class DateJa extends DateUtil
 	 * @param {array} $args  日付文字列の配列
 	 * @return {array} タイムスタンプをキーにしたハッシュ
 	 */
-	public function getTimestampFor(array $args): array
+	private function getTimestampFor(array $args): array
 	{
 		$r = [];
 		foreach ($args as $value) {

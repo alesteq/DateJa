@@ -1,6 +1,5 @@
 <?php
 namespace Tests\Alesteq\DateJa;
-require_once __DIR__ . '/../../../vendor/autoload.php';
 use Alesteq\DateJa\DateJa;
 use Alesteq\DateJa\DateUtil;
 use Alesteq\DateJa\Holiday\JanuaryHoliday;
@@ -65,7 +64,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		
 		// 国民の休日
 		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 4, 1, 2019)));
-		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 5, 1, 1999)));
+		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 5, 1, 2019)));
 	}
 	
 	/**
@@ -207,16 +206,6 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	public function testGetDecemberHoliday()
 	{
 		$this->assertContainsOnly('int', $this->december->getHoliday(2018));
-	}
-	
-	/**
-	 * 国民の休日を取得
-	 * 前日と翌日が祝日の場合に休日とする
-	 * @test
-	 */
-	public function testGetNationalHoliday()
-	{
-		$this->assertContains(11, $this->dj->getNationalHoliday($this->timestamp));
 	}
 	
 	/**
