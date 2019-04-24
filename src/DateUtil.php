@@ -122,32 +122,18 @@ class DateUtil
 	 */
 	public function getEraNewYear(int $time_stamp): int
 	{
-		// 令和
-		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) $r = 2019;
+		$r = 0;	// 一世一元の制より前
 		
-		// 平成
-		if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp && mktime(0, 0, 0, 5 ,1, 2019) > $time_stamp) {
-			$r = 1989;
-		}
-		
-		// 昭和
-		if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp && mktime(0, 0, 0, 1, 8, 1989) > $time_stamp) {
-			$r = 1926;
-		}
-		
-		// 大正
-		if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp && mktime(0, 0, 0, 12, 25, 1926) > $time_stamp) {
-			$r = 1912;
-		}
-		
-		// 明治
-		if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp && mktime(0, 0, 0, 7, 30, 1912) > $time_stamp) {
-			$r = 1868;
-		}
-		
-		// 一世一元の制より前
-		if (mktime(0, 0, 0, 1, 25, 1868) > $time_stamp) {
-			$r = 0;
+		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) {
+			$r = 2019;	// 令和
+		} else if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp) {
+			$r = 1989;	// 平成
+		} else if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp) {
+			$r = 1926;	// 昭和
+		} else if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp) {
+			$r = 1912;	// 大正
+		} else if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp) {
+			$r = 1868;	// 明治
 		}
 		
 		return $r;

@@ -142,6 +142,7 @@ class DateJa extends DateUtil
 	 */
 	private function isNationalHoliday(int $day, int $holiday, int $holiday_flag, array &$holiday_list): int
 	{
+		$isHoliday = 0;
 		if ($holiday !== DJ_NO_HOLIDAY && $holiday !== DJ_COMPENSATING_HOLIDAY) {
 			$isHoliday = 1;
 			
@@ -149,8 +150,6 @@ class DateJa extends DateUtil
 			if ($holiday_flag == 2) {
 				$holiday_list[--$day] = DJ_NATIONAL_HOLIDAY;
 			}
-		} else {
-			$isHoliday = 0;
 		}
 		
 		return $isHoliday;
