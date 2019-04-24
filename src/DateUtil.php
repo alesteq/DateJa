@@ -124,16 +124,27 @@ class DateUtil
 	{
 		$r = 0;	// 一世一元の制より前
 		
-		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) {
-			$r = 2019;	// 令和
-		} else if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp) {
-			$r = 1989;	// 平成
-		} else if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp) {
-			$r = 1926;	// 昭和
-		} else if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp) {
-			$r = 1912;	// 大正
-		} else if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp) {
-			$r = 1868;	// 明治
+		// 令和
+		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) $r = 2019;
+		
+		// 平成
+		if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp && mktime(0, 0, 0, 5 ,1, 2019) > $time_stamp) {
+			$r = 1989;
+		}
+		
+		// 昭和
+		if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp && mktime(0, 0, 0, 1, 8, 1989) > $time_stamp) {
+			$r = 1926;
+		}
+		
+		// 大正
+		if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp && mktime(0, 0, 0, 12, 25, 1926) > $time_stamp) {
+			$r = 1912;
+		}
+		
+		// 明治
+		if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp && mktime(0, 0, 0, 7, 30, 1912) > $time_stamp) {
+			$r = 1868;
 		}
 		
 		return $r;
@@ -311,14 +322,15 @@ class DateUtil
 	/**
 	 * 振替休日の判定
 	 *
-	 * @param {int} $time_stamp  判定を行う日のタイムスタンプ
-	 * @param {array} $holidays  振替休日の場合に追加する祝日の配列
+	 * @param {int} time_stamp  判定を行う日のタイムスタンプ
+	 * @param {array} holidays  振替休日の場合に追加する祝日の配列
+	 * @param {int} addition  何日後に振替休日にするか指定 (optional)
 	 * @raturn {array} 振替休日になる場合に{@code $holidays}に追加して返す
 	 */
-	public function getCompensatory(int $time_stamp, array $holidays): array
+	public function getCompensatory(int $time_stamp, array $holidays, int $addition = 1): array
 	{
 		if ($this->getWeekDay($time_stamp) == DJ_SUNDAY) {
-			$day = $this->getDay($time_stamp) + 1;
+			$day = $this->getDay($time_stamp) + $addition;
 			$holidays[$day] = DJ_COMPENSATING_HOLIDAY;
 		}
 		
