@@ -33,7 +33,7 @@ class MayHoliday extends DateUtil implements HolidayList
 			$res = $this->getCompensatory(mktime(0, 0, 0, 5, 3, $year), $res);
 		}
 		
-		$res[5] = DJ_CHILDREN_S_DAY;
+		$res[5] = DJ_CHILDRENS_DAY;
 		// 振替休日
 		$res = $this->getCompensatory(mktime(0, 0, 0, 5, 5, $year), $res);
 		

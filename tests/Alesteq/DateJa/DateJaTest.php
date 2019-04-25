@@ -216,21 +216,12 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	{
 		$this->assertTrue($this->dj->isHoliday(2019, 5, 1));
 	}
-	
-	/**
-	 * 干支キーを返す
-	 * @test
-	 */
-	public function tesGetOrientalZodiac()
-	{
-		$this->assertEquals(0, $this->dj->getOrientalZodiac($this->timestamp));
-	}
 
 	/**
 	 * 年号元年の西暦を返す
 	 * @test
 	 */
-	public function testGetEraName()
+	public function testGetEraNewYear()
 	{
 		$this->assertEquals(0, $this->dj->getEraNewYear(mktime(0, 0, 0, 1 , 24, 1868)));
 		$this->assertEquals(1868, $this->dj->getEraNewYear(mktime(0, 0, 0, 1 , 25, 1868)));
@@ -253,18 +244,18 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 * 日本語フォーマットされた休日名を返す
 	 * @test
 	 */
-	public function testViewHoliday()
+	public function testGetHolidayName()
 	{
-		$this->assertEquals('元旦', $this->dj->viewHoliday(1));
+		$this->assertEquals('元日', $this->dj->getHolidayName(1));
 	}
 
 	/**
 	 * 日本語フォーマットされた曜日名を返す
 	 * @test
 	 */
-	public function testViewWeekday()
+	public function testGetWeekName()
 	{
-		$this->assertEquals('水', $this->dj->viewWeekday(3));
+		$this->assertEquals('金', $this->dj->getWeekName($this->timestamp));
 	}
 
 
@@ -272,9 +263,9 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 * 日本語フォーマットされた旧暦月名を返す
 	 * @test
 	 */
-	public function testViewMonth()
+	public function testGetLunarMonth()
 	{
-		$this->assertEquals('皐月', $this->dj->viewMonth(5));
+		$this->assertEquals('皐月', $this->dj->getLunarMonth(5));
 	}
 
 
@@ -282,27 +273,45 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 * 日本語フォーマットされた六曜名を返す
 	 * @test
 	 */
-	public function testViewSixWeekday()
+	public function testGetSixWeekday()
 	{
-		$this->assertEquals('先勝', $this->dj->viewSixWeekday(2));
+		$this->assertEquals('先勝', $this->dj->getSixWeekday(2));
+	}
+
+	/**
+	 * 日本語フォーマットされた十干を返す
+	 * @test
+	 */
+	public function testGetCelestialStems()
+	{
+		$this->assertEquals('己', $this->dj->getCelestialStems($this->timestamp));
+	}
+
+	/**
+	 * 日本語フォーマットされた十二支を返す
+	 * @test
+	 */
+	public function testGetTwelveHorarySigns()
+	{
+		$this->assertEquals('亥', $this->dj->getTwelveHorarySigns($this->timestamp));
 	}
 
 	/**
 	 * 日本語フォーマットされた干支を返す
 	 * @test
 	 */
-	public function testViewOrientalZodiac()
+	public function testGetZodiac()
 	{
-		$this->assertEquals('亥', $this->dj->viewOrientalZodiac(0));
+		$this->assertEquals('己亥', $this->dj->getZodiac($this->timestamp));
 	}
 
 	/**
 	 * 日本語フォーマットされた年号を返す
 	 * @test
 	 */
-	public function testViewEraName()
+	public function testGetEraName()
 	{
-		$this->assertEquals('平成', $this->dj->viewEraName(mktime(0, 0, 0, 4, 30, 2019)));
+		$this->assertEquals('平成', $this->dj->getEraName(mktime(0, 0, 0, 4, 30, 2019)));
 	}
 	
 	/**
@@ -396,13 +405,13 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testGetDayByWeekly()
 	{
-		$this->assertEquals(5, $this->dj->getDayByWeekly(2019, 5, 0));
-		$this->assertEquals(6, $this->dj->getDayByWeekly(2019, 5, 1));
-		$this->assertEquals(7, $this->dj->getDayByWeekly(2019, 5, 2));
-		$this->assertEquals(1, $this->dj->getDayByWeekly(2019, 5, 3));
-		$this->assertEquals(2, $this->dj->getDayByWeekly(2019, 5, 4));
-		$this->assertEquals(3, $this->dj->getDayByWeekly(2019, 5, 5));
-		$this->assertEquals(4, $this->dj->getDayByWeekly(2019, 5, 6));
+		$this->assertEquals(13, $this->dj->getDayByWeekly(2019, 5, 1, 2));
+		
+		// 該当する日が無い場合
+		$this->assertEquals(0, $this->dj->getDayByWeekly(2019, 5, 3, 6));
+		
+		// 曜日指定が不正
+		$this->assertEquals(0, $this->dj->getDayByWeekly(2019, 5, 7));
 	}
 	
 	/**

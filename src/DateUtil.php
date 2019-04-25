@@ -4,6 +4,8 @@
  */
 declare(strict_types=1);
 namespace Alesteq\DateJa;
+use \Exception;
+use \Throwable;
 
 date_default_timezone_set('Asia/Tokyo');
 
@@ -22,7 +24,7 @@ define("DJ_THE_EMPEROR_S_BIRTHDAY", 8);
 define("DJ_CROWN_PRINCE_HIROHITO_WEDDING", 9);
 define("DJ_CONSTITUTION_DAY", 10);
 define("DJ_NATIONAL_HOLIDAY", 11);
-define("DJ_CHILDREN_S_DAY", 12);
+define("DJ_CHILDRENS_DAY", 12);
 define("DJ_COMPENSATING_HOLIDAY", 13);
 define("DJ_CROWN_PRINCE_NARUHITO_WEDDING", 14);
 define("DJ_MARINE_DAY", 15);
@@ -51,12 +53,13 @@ define("DJ_WEDNESDAY", 3);
 define("DJ_THURSDAY", 4);
 define("DJ_FRIDAY", 5);
 define("DJ_SATURDAY", 6);
+define("DJ_Holiday", 7);
 
 class DateUtil
 {
 	private $_holiday_name = [
 		0 => "",
-		1 => "元旦",
+		1 => "元日",
 		2 => "成人の日",
 		3 => "建国記念の日",
 		4 => "昭和天皇の大喪の礼",
@@ -81,9 +84,10 @@ class DateUtil
 		23 => "天皇即位の日",
 	];
 	private $_weekday_name = ["日", "月", "火", "水", "木", "金", "土"];
-	private $_month_name = ["", "睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走"];
+	private $_lunar_month_name = ["", "睦月", "如月", "弥生", "卯月", "皐月", "水無月", "文月", "葉月", "長月", "神無月", "霜月", "師走"];
 	private $_six_weekday = ["大安", "赤口", "先勝", "友引", "先負", "仏滅"];
-	private $_oriental_zodiac = ["亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌"];
+	private $_twelve_horary_signs = ["申", "酉", "戌", "亥", "子", "丑", "寅", "卯", "辰", "巳", "午", "未"];
+	private $_celestial_stems = ["庚", "辛", "壬", "癸", "甲", "乙", "丙", "丁", "戊", "己"];
 	private $_era_name = [
 		"0" => "",
 		"1868" => "明治",
@@ -156,7 +160,7 @@ class DateUtil
 	 * @param {int} time_stamp タイムスタンプ
 	 * @return {string}
 	 */
-	public function viewEraName(int $time_stamp): string
+	public function getEraName(int $time_stamp): string
 	{
 		return $this->_era_name[$this->getEraNewYear($time_stamp)];
 	}
@@ -212,10 +216,10 @@ class DateUtil
 	/**
 	 * 休日名を返す
 	 *
-	 * @param {int} key 休日キー
+	 * @param {int} key 休日定数
 	 * @return {string}
 	 */
-	public function viewHoliday(int $key): string
+	public function getHolidayName(int $key): string
 	{
 		return $this->_holiday_name[$key];
 	}
@@ -234,23 +238,23 @@ class DateUtil
 	/**
 	 * 曜日名を返す
 	 *
-	 * @param {int} key 曜日キー
+	 * @param {int} time_stamp タイムスタンプ
 	 * @return {string}
 	 */
-	public function viewWeekday(int $key): string
+	public function getWeekName(int $time_stamp): string
 	{
-		return $this->_weekday_name[$key];
+		return $this->_weekday_name[(int)date("w", $time_stamp)];
 	}
 
 	/**
 	 * 旧暦月名を返す
 	 *
-	 * @param {int} key 月キー
+	 * @param {int} key 月
 	 * @return {string}
 	 */
-	public function viewMonth(int $key): string
+	public function getLunarMonth(int $month): string
 	{
-		return $this->_month_name[$key];
+		return $this->_lunar_month_name[$month];
 	}
 
 	/**
@@ -259,32 +263,45 @@ class DateUtil
 	 * @param {int} key 六曜キー
 	 * @return {string}
 	 */
-	public function viewSixWeekday(int $key): string
+	public function getSixWeekday(int $key): string
 	{
 		return array_key_exists($key, $this->_six_weekday) ? $this->_six_weekday[$key] : "";
 	}
 
 	/**
-	 * 干支キーを返す
+	 * 十干を返す
 	 *
 	 * @param {int} time_stamp タイムスタンプ
-	 * @return {int}
+	 * @return {string}
 	 */
-	public function getOrientalZodiac(int $time_stamp): int
+	public function getCelestialStems(int $time_stamp): string
 	{
-		$res = ($this->getYear($time_stamp)+9)%12;
-		return $res;
+		$idx = $this->getYear($time_stamp) % 10;
+		return $this->_celestial_stems[$idx];
+	}
+
+	/**
+	 * 十二支を返す
+	 *
+	 * @param {int} time_stamp タイムスタンプ
+	 * @return {string}
+	 */
+	public function getTwelveHorarySigns(int $time_stamp): string
+	{
+		$idx = $this->getYear($time_stamp) % 12;
+		return $this->_twelve_horary_signs[$idx];
 	}
 
 	/**
 	 * 干支を返す
 	 *
-	 * @param {int} key 干支キー
+	 * @param {int} time_stamp タイムスタンプ
 	 * @return {string}
 	 */
-	public function viewOrientalZodiac(int $key): string
+	public function getZodiac(int $time_stamp): string
 	{
-		return $this->_oriental_zodiac[$key];
+		
+		return $this->getCelestialStems($time_stamp) . $this->getTwelveHorarySigns($time_stamp);
 	}
 
 	/**
@@ -368,18 +385,27 @@ class DateUtil
 	 * @param {int} year 年
 	 * @param {int} month 月
 	 * @param {int} weekly 曜日
-	 * @param {int} renb 第×か
-	 * @return {int}
+	 * @param {int} cnt 第×か
+	 * @return {int} 該当する日が当該月にない場合は0を返す
 	 */
-	public function getDayByWeekly(int $year, int $month, int $weekly, int $renb = 1): int
+	public function getDayByWeekly(int $year, int $month, int $weekly, int $cnt = 1): int
 	{
-		$ary = array(1,2,3,4,5,6,7,1,2,3,4,5,6,);
-		$start = 6 - $weekly;
-		for ($i = 0, $idx = $start; $i < 7; $i++, $idx++) {
-			$map[] = $ary[$idx];
+		try {
+			if ($cnt < 1) throw new Exception();
+			$ary = array(1,2,3,4,5,6,7,1,2,3,4,5,6,);
+			$start = 6 - $weekly;
+			for ($i = 0, $idx = $start; $i < 7; $i++, $idx++) {
+				$map[] = $ary[$idx];
+			}
+			$cnt = 7 * $cnt + 1;
+			$r = $cnt - $map[$this->getWeekday(mktime(0, 0, 0, $month, 1, $year))];
+			$lim = (int)date("t", mktime(0, 0, 0, $month, 1, $year));
+			if ($r > $lim) throw new Exception();
+		} catch (Throwable $t) {
+			$r = 0;
 		}
-		$renb = 7*$renb+1;
-		return $renb - $map[$this->getWeekday(mktime(0,0,0,$month,1,$year))];
+		
+		return $r;
 	}
 	
 }
