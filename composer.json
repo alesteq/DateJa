@@ -1,6 +1,6 @@
 {
 	"name": "alesteq/date-ja",
-	"description": "日本の暦と祝日・休日、及びカレンダーを取得するライブラリ",
+	"description": "PHP library for getting Japanese public holidays and calendar information.",
 	"keywords": ["calendar", "holiday", "date"],
 	"type": "library",
 	"license": "MIT",
