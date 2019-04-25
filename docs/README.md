@@ -25,7 +25,7 @@ $dateJa->メソッド名();
 
 - [Constant](#Constant)
   - [祝日定数](#祝日定数)
-  - [曜日定数](#曜日定数))
+  - [曜日定数](#曜日定数)
 - [isHoliday](#isHoliday)
 - [getHolidayList](#getHolidayList)
 - [makeDateArray](#makeDateArray)
@@ -38,7 +38,7 @@ $dateJa->メソッド名();
 - [getWeekName](#getWeekName)
 - [getLunarMonth](#getLunarMonth)
 - [getHolidayName](#getHolidayName)
-- [getZodiac](#getZodizc)
+- [getZodiac](#getZodiac)
 - [getDayByWeekly](#getDayByWeekly)
 - [getWorkingDay](#getWorkingDay)
 

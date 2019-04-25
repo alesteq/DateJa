@@ -1,6 +1,6 @@
 # DateJa
 
-[![Build Status](https://travis-ci.org/alesteq/DateJa.svg?branch=master)](https://travis-ci.org/alesteq/DateJa) [![Maintainability](https://api.codeclimate.com/v1/badges/38c00763b074927d785c/maintainability)](https://codeclimate.com/github/alesteq/DateJa/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/38c00763b074927d785c/test_coverage)](https://codeclimate.com/github/alesteq/DateJa/test_coverage) ![Packagist Pre Release Version](https://img.shields.io/packagist/vpre/alesteq/date-ja.svg) ![PHP from Packagist](https://img.shields.io/packagist/php-v/alesteq/date-ja.svg?color=important) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/alesteq/DateJa.svg)
+[![Build Status](https://travis-ci.org/alesteq/DateJa.svg?branch=master)](https://travis-ci.org/alesteq/DateJa) [![Maintainability](https://api.codeclimate.com/v1/badges/38c00763b074927d785c/maintainability)](https://codeclimate.com/github/alesteq/DateJa/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/38c00763b074927d785c/test_coverage)](https://codeclimate.com/github/alesteq/DateJa/test_coverage) [![Latest Stable Version](https://poser.pugx.org/alesteq/date-ja/v/stable)](https://packagist.org/packages/alesteq/date-ja) [![PHP from Packagist](https://img.shields.io/packagist/php-v/alesteq/date-ja.svg?color=important)](https://packagist.org/packages/alesteq/date-ja) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/alesteq/DateJa.svg)
 
 日本の暦と祝日・休日、及びカレンダーを取得するPHPライブラリです。
 
@@ -64,7 +64,7 @@ $holiday = $dateJa->isHoliday(2019, 5, 1);	// TRUE
 
 
 
-メソッドの詳細は[リファレンスマニュアルへ]( https://github.com/alesteq/DateJa/docs/README.md)
+メソッドの詳細は[リファレンスマニュアルへ]( https://github.com/alesteq/DateJa/tree/master/docs)
 
 
 
