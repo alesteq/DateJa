@@ -63,8 +63,8 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		$this->assertContainsOnly('int', $this->dj->getHolidayList($this->timestamp, false));
 		
 		// 国民の休日
-		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 4, 1, 2019)));
-		$this->assertContains(11, $this->dj->getHolidayList(mktime(0, 0, 0, 5, 1, 2019)));
+		$this->assertArrayHasKey(30, $this->dj->getHolidayList(mktime(0, 0, 0, 4, 1, 2019)));
+		$this->assertArrayHasKey(2, $this->dj->getHolidayList(mktime(0, 0, 0, 5, 1, 2019)));
 	}
 	
 	/**

@@ -110,7 +110,7 @@ class DateJa extends DateUtil
 		while ($baseSec <= $targetSec) {
 			$day = $this->getDay($baseSec);
 			$holiday = $holiday_list[$day] ?? DJ_NO_HOLIDAY;
-			$isHoliday = $this->isNationalHoliday($day, $holiday, $holiday_flag, $holiday_list);
+			$isHoliday = $this->isNationalHoliday(($baseSec - $one_day), $holiday, $holiday_flag, $holiday_list);
 			
 			// フラグをシフト
 			$holiday_flag = $holiday_flag << 1;
@@ -124,7 +124,7 @@ class DateJa extends DateUtil
 		// 翌月1日の祝日判定
 		$holiday_hash = $this->getHolidayList($baseSec, false);
 		$holiday = $holiday_hash[1] ?? DJ_NO_HOLIDAY;
-		$isHoliday = $this->isNationalHoliday(1, $holiday, $holiday_flag, $holiday_list);
+		$isHoliday = $this->isNationalHoliday(($baseSec - $one_day), $holiday, $holiday_flag, $holiday_list);
 		
 		return $holiday_list;
 	}
@@ -134,13 +134,13 @@ class DateJa extends DateUtil
 	 * getNationalHolidayで使用
 	 *
 	 * @access private
-	 * @param {int} day  判定する日
+	 * @param {int} $time_stamp  判定する日のタイムスタンプ
 	 * @param {int} holiday  祝日定数
 	 * @param {int} holiday_flag  ２進数の昨日と一昨日の祝日フラグ
 	 * @param {array} holiday_list  祝日の配列（リファレンス）
 	 * @return {array} 祝日の場合に{@code $holiday_list}に追加して返す
 	 */
-	private function isNationalHoliday(int $day, int $holiday, int $holiday_flag, array &$holiday_list): int
+	private function isNationalHoliday(int $time_stamp, int $holiday, int $holiday_flag, array &$holiday_list): int
 	{
 		$isHoliday = 0;
 		if ($holiday !== DJ_NO_HOLIDAY && $holiday !== DJ_COMPENSATING_HOLIDAY) {
@@ -148,7 +148,8 @@ class DateJa extends DateUtil
 			
 			// 本日と一昨日が祝日で昨日が平日(２進数で0b10)
 			if ($holiday_flag == 2) {
-				$holiday_list[--$day] = DJ_NATIONAL_HOLIDAY;
+				$day = $this->getDay($time_stamp);
+				$holiday_list[$day] = DJ_NATIONAL_HOLIDAY;
 			}
 		}
 		
