@@ -358,6 +358,7 @@ class DateJaTest extends \PHPUnit\Framework\TestCase
 		$this->assertArrayHasKey("Month", $this->dj->makeDateArray($this->timestamp));
 		$this->assertArrayHasKey("Day", $this->dj->makeDateArray($this->timestamp));
 		$this->assertArrayHasKey("Weekday", $this->dj->makeDateArray($this->timestamp));
+		$this->assertArrayHasKey("Weekname", $this->dj->makeDateArray($this->timestamp));
 		$this->assertArrayHasKey("Holiday", $this->dj->makeDateArray($this->timestamp));
 	}
 

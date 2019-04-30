@@ -172,7 +172,7 @@ class DateJa extends DateUtil
 			"Month"   => $this->getMonth($time_stamp),
 			"Day"     => $day,
 			"Weekday" => $week,
-			"Weekname"=> $this->getWeekName($week),
+			"Weekname"=> $this->getWeekName($time_stamp),
 			"Holiday" => isset($holiday[$day]) ? $holiday[$day] : DJ_NO_HOLIDAY,
 		];
 
