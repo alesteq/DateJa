@@ -76,7 +76,7 @@ class DateUtil
 		15 => "海の日",
 		16 => "秋分の日",
 		17 => "敬老の日",
-		18 => "体育の日",
+		18 => "スポーツの日",	// 2019年までは「体育の日」
 		19 => "文化の日",
 		20 => "勤労感謝の日",
 		21 => "即位礼正殿の儀",
@@ -117,7 +117,7 @@ class DateUtil
 
 	public function __construct()
 	{}
-	
+
 	/**
 	 * 元号元年の西暦を返す
 	 *
@@ -127,30 +127,30 @@ class DateUtil
 	public function getEraNewYear(int $time_stamp): int
 	{
 		$r = 0;	// 一世一元の制より前
-		
+
 		// 令和
 		if (mktime(0, 0, 0, 5 ,1, 2019) <= $time_stamp) $r = 2019;
-		
+
 		// 平成
 		if (mktime(0, 0, 0, 1, 8, 1989) <= $time_stamp && mktime(0, 0, 0, 5 ,1, 2019) > $time_stamp) {
 			$r = 1989;
 		}
-		
+
 		// 昭和
 		if (mktime(0, 0, 0, 12, 25, 1926) <= $time_stamp && mktime(0, 0, 0, 1, 8, 1989) > $time_stamp) {
 			$r = 1926;
 		}
-		
+
 		// 大正
 		if (mktime(0, 0, 0, 7, 30, 1912) <= $time_stamp && mktime(0, 0, 0, 12, 25, 1926) > $time_stamp) {
 			$r = 1912;
 		}
-		
+
 		// 明治
 		if (mktime(0, 0, 0, 1, 25, 1868) <= $time_stamp && mktime(0, 0, 0, 7, 30, 1912) > $time_stamp) {
 			$r = 1868;
 		}
-		
+
 		return $r;
 	}
 
@@ -300,7 +300,6 @@ class DateUtil
 	 */
 	public function getZodiac(int $time_stamp): string
 	{
-		
 		return $this->getCelestialStems($time_stamp) . $this->getTwelveHorarySigns($time_stamp);
 	}
 
@@ -322,17 +321,17 @@ class DateUtil
 			7 => DJ_MARINE_DAY,
 			9 => DJ_RESPECT_FOR_SENIOR_CITIZENS_DAY,
 		];
-		
+
 		if ($year >= 2000 && array_key_exists($month, $holiday_name_2000)) {
 			$second_monday = $this->getDayByWeekly($year, $month, DJ_MONDAY, 2);
 			$res[$second_monday] = $holiday_name_2000[$month];
 		}
-		
+
 		if ($year >= 2003 && array_key_exists($month, $holiday_name_2003)) {
 			$third_monday = $this->getDayByWeekly($year, $month, DJ_MONDAY, 3);
 			$res[$third_monday] = $holiday_name_2003[$month];
 		}
-		
+
 		return $res;
 	}
 
@@ -350,7 +349,7 @@ class DateUtil
 			$day = $this->getDay($time_stamp) + $addition;
 			$holidays[$day] = DJ_COMPENSATING_HOLIDAY;
 		}
-		
+
 		return $holidays;
 	}
 
@@ -366,14 +365,14 @@ class DateUtil
 		$year = $this->getYear($time_stamp);
 		$month = $this->getMonth($time_stamp);
 		if (!array_key_exists($month, $this->_equinox)) return 0;
-		
+
 		foreach ($this->_equinox[$month] as $start => $val) {
 			if ($start < $year) {
 				$adj = $val;
 				break;
 			}
 		}
-		
+
 		$day = floor($adj + (0.242194 * ($year - 1980)) - floor(($year - 1980) / 4));
 
 		return mktime(0, 0, 0, $month, (int)$day, $year);
@@ -404,9 +403,9 @@ class DateUtil
 		} catch (Throwable $t) {
 			$r = 0;
 		}
-		
+
 		return $r;
 	}
-	
+
 }
 ?>

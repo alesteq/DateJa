@@ -46,7 +46,7 @@ class DateJa extends DateUtil
 		11 => "Alesteq\DateJa\Holiday\NovemberHoliday",
 		12 => "Alesteq\DateJa\Holiday\DecemberHoliday",
 	];
-	
+
 	/**
 	 * コンストラクタ
 	 */
@@ -66,7 +66,7 @@ class DateJa extends DateUtil
 		$month = $this->getMonth($time_stamp);
 		$c = new $this->_month_holiday[$month];
 		$r = $c->getHoliday($year, $isRecursion);
-		
+
 		if ($isRecursion) {
 			$r = $this->getNationalHoliday(mktime(0, 0, 0, $month, 1, $year), $r);
 		}
@@ -103,7 +103,7 @@ class DateJa extends DateUtil
 		$year  = (int)date("Y", $time_stamp);
 		$month = (int)date("m", $time_stamp);
 		$baseSec = mktime(0, 0, 0, $month, 1, $year);
-		
+
 		// 当該月末日の00:00のtimestamp
 		$targetSec = mktime(0, 0, 0, ++$month, 0, $year);
 
@@ -111,7 +111,7 @@ class DateJa extends DateUtil
 			$day = $this->getDay($baseSec);
 			$holiday = $holiday_list[$day] ?? DJ_NO_HOLIDAY;
 			$isHoliday = $this->isNationalHoliday(($baseSec - $one_day), $holiday, $holiday_flag, $holiday_list);
-			
+
 			// フラグをシフト
 			$holiday_flag = $holiday_flag << 1;
 			$holiday_flag += $isHoliday;
@@ -125,10 +125,10 @@ class DateJa extends DateUtil
 		$holiday_hash = $this->getHolidayList($baseSec, false);
 		$holiday = $holiday_hash[1] ?? DJ_NO_HOLIDAY;
 		$isHoliday = $this->isNationalHoliday(($baseSec - $one_day), $holiday, $holiday_flag, $holiday_list);
-		
+
 		return $holiday_list;
 	}
-	
+
 	/**
 	 * 祝日（休日を除く）判定
 	 * getNationalHolidayで使用
@@ -145,14 +145,14 @@ class DateJa extends DateUtil
 		$isHoliday = 0;
 		if ($holiday !== DJ_NO_HOLIDAY && $holiday !== DJ_COMPENSATING_HOLIDAY) {
 			$isHoliday = 1;
-			
+
 			// 本日と一昨日が祝日で昨日が平日(２進数で0b10)
 			if ($holiday_flag == 2) {
 				$day = $this->getDay($time_stamp);
 				$holiday_list[$day] = DJ_NATIONAL_HOLIDAY;
 			}
 		}
-		
+
 		return $isHoliday;
 	}
 
@@ -228,7 +228,7 @@ class DateJa extends DateUtil
 		$lim = (int)date("t", mktime(0, 0, 0, $month, 1, $year));
 		return $this->getSpanCalendar($year, $month, 1, $lim);
 	}
-	
+
 	/**
 	 * 指定範囲のカレンダー配列を取得す
 	 *
@@ -287,7 +287,7 @@ class DateJa extends DateUtil
 		}
 		return $res;
 	}
-	
+
 	/**
 	 * 受け取った日付の配列をそれぞれ当日00:00のタイムスタンプに変換
 	 *
@@ -304,7 +304,7 @@ class DateJa extends DateUtil
 			}
 			$r[mktime(0, 0, 0, (int)date("n", $value), (int)date("j", $value), (int)date("Y", $value))] = 1;
 		}
-		
+
 		return $r;
 	}
 }

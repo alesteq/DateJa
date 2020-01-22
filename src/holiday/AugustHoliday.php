@@ -23,7 +23,9 @@ class AugustHoliday extends DateUtil implements HolidayList
 	public function getHoliday(int $year): array
 	{
 		$res = array();
-		if ($year >= 2016) {
+        if ($year === 2020) {
+			$res[10] = DJ_MOUNTAIN_DAY;
+        } else if ($year >= 2016) {
 			$res[11] = DJ_MOUNTAIN_DAY;
 			//振替休日
 			$res = $this->getCompensatory(mktime(0, 0, 0, 8, 11, $year), $res);
