@@ -22,7 +22,10 @@ class OctoberHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
-		$res = $this->getHappyMonday($year, 10);
+		// 2020年は東京オリンピックのため休日を８月へ移動
+        if ($year !== 2020) {
+            $res = $this->getHappyMonday($year, 10);
+		}
 		
 		// 即位礼正殿の儀
 		if ($year == 2019) {

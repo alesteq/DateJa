@@ -22,8 +22,14 @@ class JulyHoliday extends DateUtil implements HolidayList
 	 */
 	public function getHoliday(int $year): array
 	{
-		$res = $this->getHappyMonday($year, 7);
-		
+		// 2020年は東京オリンピックのため特例措置
+		if ($year === 2020) {
+			$res[23] = DJ_MARINE_DAY;
+			$res[24] = DJ_SPORTS_DAY;
+		} else {
+			$res = $this->getHappyMonday($year, 7);
+		}
+
 		if ($year >= 1996 && $year < 2003) {
 			$res[20] = DJ_MARINE_DAY;
 			//振替休日
